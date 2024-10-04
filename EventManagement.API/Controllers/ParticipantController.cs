@@ -25,7 +25,6 @@ namespace EventManagement.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterParticipant([FromBody] RegisterParticipantToEventRequestDTO model)
         {
-            var participant = _mapper.Map<Participant>(model);
             await _participantService.RegisterParticipantToEventAsync(model.UserId,model.EventId);
             return Ok("Participant registered successfully");
         }

@@ -29,7 +29,9 @@ namespace EventManagement.DataAccess.Repositories
 
         public async Task<Image> GetImageByIdAsync(Guid id)
         {
-            return await _context.Images.FirstOrDefaultAsync(e => e.Id == id);
+            return await _context.Images
+                .Include(i=>i.Event)
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task UpdateImageAsync(Image image)

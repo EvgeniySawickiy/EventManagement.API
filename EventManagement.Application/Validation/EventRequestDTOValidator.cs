@@ -15,7 +15,7 @@ namespace EventManagement.Application.Validation
             RuleFor(x => x.Description)
                 .NotEmpty().WithMessage("Description is required.");
 
-            RuleFor(x => x.Date)
+            RuleFor(x => x.EventDate)
                 .GreaterThan(DateTime.Now).WithMessage("Event date must be in the future.");
 
             RuleFor(x => x.Location)

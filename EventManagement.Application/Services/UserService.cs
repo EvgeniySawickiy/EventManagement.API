@@ -28,33 +28,39 @@ namespace EventManagement.Application.Services
         public async Task<bool> RegisterUserAsync(User newUser, Participant newParticipant)
         {
             var passwordHash = HashPassword(newUser.PasswordHash);
-
-            var user = new User
+            if (_unitOfWork.Users.GetByUsernameAsync(newUser.Username) != null)
             {
-                Id= Guid.NewGuid(),
-                Username = newUser.Username,
-                Email = newUser.Email,
-                PasswordHash = passwordHash,
-                CreatedAt = DateTime.UtcNow,
-                Role= "User"
-            };
-
-            var participant = new Participant
+                return false;
+            }
+            else
             {
-                Id = Guid.NewGuid(),
-                FirstName = newParticipant.FirstName,
-                LastName = newParticipant.LastName,
-                BirthDate= newParticipant.BirthDate,
-                Email = newParticipant.Email,
-                UserId= user.Id,
+                var user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Username = newUser.Username,
+                    Email = newUser.Email,
+                    PasswordHash = passwordHash,
+                    CreatedAt = DateTime.UtcNow,
+                    Role = "User"
+                };
 
-            };
+                var participant = new Participant
+                {
+                    Id = Guid.NewGuid(),
+                    FirstName = newParticipant.FirstName,
+                    LastName = newParticipant.LastName,
+                    BirthDate = newParticipant.BirthDate,
+                    Email = newUser.Email,
+                    UserId = user.Id,
 
-            await _unitOfWork.Users.AddAsync(user);
-            await _unitOfWork.Participants.AddParticipantAsync(participant);
-            await _unitOfWork.SaveChangesAsync();
+                };
 
-            return true;
+                await _unitOfWork.Users.AddAsync(user);
+                await _unitOfWork.Participants.AddParticipantAsync(participant);
+                await _unitOfWork.SaveChangesAsync();
+
+                return true;
+            }
         }
 
         public async Task<bool> ValidateCredentialsAsync(string username, string password)

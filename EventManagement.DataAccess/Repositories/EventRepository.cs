@@ -20,7 +20,10 @@ namespace EventManagement.DataAccess.Repositories
 
         public async Task<Event> GetEventByIdAsync(Guid id)
         {
-            return await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
+            return await _context.Events
+          .Include(e => e.Image)
+          .Include(e => e.EventParticipants)
+          .FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task AddEventAsync(Event eventEntity)

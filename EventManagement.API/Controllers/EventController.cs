@@ -119,7 +119,6 @@ namespace EventManagement.API.Controllers
             };
             await _imageService.AddImageAsync(imageEntity);
 
-            // Обновление события
             eventEntity.ImageId = imageEntity.Id;
             await _eventService.UpdateEventAsync(eventId,eventEntity);
 

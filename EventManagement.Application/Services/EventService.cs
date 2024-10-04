@@ -29,7 +29,7 @@ namespace EventManagement.Application.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdateEventAsync(Guid eventId,Event eventEntity)
+        public async Task UpdateEventAsync(Guid eventId, Event eventEntity)
         {
             eventEntity.Id = eventId;
             await _unitOfWork.Events.UpdateEventAsync(eventEntity);
@@ -38,15 +38,18 @@ namespace EventManagement.Application.Services
 
         public async Task DeleteEventAsync(Guid id)
         {
-            var eventImage= _unitOfWork.Images.GetAllImagesToEventAsync().Result.First(i=>i.EventId==id);
             await _unitOfWork.Events.DeleteEventAsync(id);
-            await _unitOfWork.Images.DeleteImageAsync(eventImage.Id);
+            var eventImage = _unitOfWork.Images.GetAllImagesToEventAsync().Result.First(i => i.EventId == id);
+            if (eventImage != null)
+            {
+                await _unitOfWork.Images.DeleteImageAsync(eventImage.Id);
+            }
             await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<Event> GetEventByNameAsync(string eventName)
         {
-            return _unitOfWork.Events.GetAllEventsAsync().Result.First(e=>e.Name==eventName);
+            return _unitOfWork.Events.GetAllEventsAsync().Result.First(e => e.Name == eventName);
         }
 
         public IEnumerable<Event> GetEventsByCriteriaAsync(DateTime? date, string location, string category)
@@ -65,7 +68,7 @@ namespace EventManagement.Application.Services
 
             if (!string.IsNullOrEmpty(category))
             {
-                query = query.Where(e => e.Category.Equals(category, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(e => e.Category.ToLower() == category.ToLower());
             }
 
             return query.ToList();

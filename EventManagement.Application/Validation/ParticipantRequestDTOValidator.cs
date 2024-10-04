@@ -16,9 +16,5 @@ public class ParticipantRequestDTOValidator : AbstractValidator<ParticipantReque
 
         RuleFor(x => x.BirthDate)
             .LessThan(DateTime.Now).WithMessage("Birth date must be in the past.");
-
-        RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Email is required.")
-            .EmailAddress().WithMessage("A valid email is required.");
     }
 }
