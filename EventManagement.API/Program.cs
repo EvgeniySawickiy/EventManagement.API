@@ -35,6 +35,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

@@ -1,16 +1,23 @@
-﻿using EventManagement.Core.Entity;
+﻿using AutoMapper;
+using EventManagement.Application.Exceptions;
+using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
 using EventManagement.Core.Interfaces.Services;
+using EventManagement.Application.Services;
 
 namespace EventManagement.Application.Services
 {
     public class EventService : IEventService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
 
-        public EventService(IUnitOfWork unitOfWork)
+        public EventService(IUnitOfWork unitOfWork, IMapper mapper, INotificationService notificationService)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _notificationService = notificationService;
         }
 
         public async Task<Event> GetEventByIdAsync(Guid id)
@@ -32,8 +39,22 @@ namespace EventManagement.Application.Services
         public async Task UpdateEventAsync(Guid eventId, Event eventEntity)
         {
             eventEntity.Id = eventId;
-            await _unitOfWork.Events.UpdateEventAsync(eventEntity);
-            await _unitOfWork.SaveChangesAsync();
+            var eventEnt = await _unitOfWork.Events.GetEventByIdAsync(eventId);
+            if (eventEnt == null)
+            {
+                throw new NotFoundException("Event not found");
+            }
+
+            bool isDateChanged = eventEnt.EventDate != eventEntity.EventDate;
+            bool isLocationChanged = eventEnt.Location != eventEntity.Location;
+
+            _mapper.Map(eventEntity, eventEnt);
+            await _unitOfWork.Events.UpdateEventAsync(eventEnt);
+
+            if (isDateChanged || isLocationChanged)
+            {
+                await _notificationService.NotifyParticipantsAsync(eventEnt.Id, isDateChanged, isLocationChanged);
+            }
         }
 
         public async Task DeleteEventAsync(Guid id)
