@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
-using EventManagement.Application;
 using EventManagement.Application.DTO.Request;
 using EventManagement.Application.DTO.Response;
+using EventManagement.Application.Services;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace EventManagement.API.Controllers
 {
@@ -25,7 +26,7 @@ namespace EventManagement.API.Controllers
         }
 
         [HttpPost("register")]
-        [AllowAnonymous]  // Регистрация доступна всем
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO registerModel)
         {
             var user = _mapper.Map<User>(registerModel.UserModel);
@@ -38,7 +39,7 @@ namespace EventManagement.API.Controllers
         }
 
         [HttpPost("login")]
-        [AllowAnonymous]  // Вход доступен всем
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserRequestDTO model)
         {
             var isValid = await _userService.ValidateCredentialsAsync(model.Username, model.Password);

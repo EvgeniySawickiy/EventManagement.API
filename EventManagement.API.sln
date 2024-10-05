@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.API", "EventManagement.API\EventManagement.API.csproj", "{58E2DCB5-E447-49FE-AFD6-05F9D4BB0BFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManagement.API", "EventManagement.API\EventManagement.API.csproj", "{58E2DCB5-E447-49FE-AFD6-05F9D4BB0BFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.Core", "EventManagement.Core\EventManagement.Core.csproj", "{B92C673A-461F-4659-B547-6DB850925456}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManagement.Core", "EventManagement.Core\EventManagement.Core.csproj", "{B92C673A-461F-4659-B547-6DB850925456}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.Application", "EventManagement.Application\EventManagement.Application.csproj", "{565BD464-7C8E-4FC5-AF5C-A0D66E77E790}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManagement.Application", "EventManagement.Application\EventManagement.Application.csproj", "{565BD464-7C8E-4FC5-AF5C-A0D66E77E790}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.DataAccess", "EventManagement.DataAccess\EventManagement.DataAccess.csproj", "{B5679126-5BA8-4811-B92A-B8BCE6CD1399}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManagement.DataAccess", "EventManagement.DataAccess\EventManagement.DataAccess.csproj", "{B5679126-5BA8-4811-B92A-B8BCE6CD1399}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.Tests", "EventManagement.Tests\EventManagement.Tests.csproj", "{CFEFB17B-D06F-438C-878A-1B52616F5125}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{B5679126-5BA8-4811-B92A-B8BCE6CD1399}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5679126-5BA8-4811-B92A-B8BCE6CD1399}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5679126-5BA8-4811-B92A-B8BCE6CD1399}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFEFB17B-D06F-438C-878A-1B52616F5125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFEFB17B-D06F-438C-878A-1B52616F5125}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFEFB17B-D06F-438C-878A-1B52616F5125}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFEFB17B-D06F-438C-878A-1B52616F5125}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,6 +13,7 @@ namespace EventManagement.DataAccess
         public DbSet<EventParticipant> EventParticipants { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<User> User { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,6 +23,7 @@ namespace EventManagement.DataAccess
             modelBuilder.ApplyConfiguration(new ParticipantConfiguration());
             modelBuilder.ApplyConfiguration(new EventParticipantConfiguration());
             modelBuilder.ApplyConfiguration(new ImageConfiguration());
+            modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
         }
     }
 }

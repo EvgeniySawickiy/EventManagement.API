@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using EventManagement.Application.DTO.Request;
 using EventManagement.Application.DTO.Response;
-using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +20,7 @@ namespace EventManagement.API.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Policy = "UserPolicy")] // Доступ для пользователей и администраторов
+        [Authorize(Policy = "UserPolicy")]
         [HttpPost("register")]
         public async Task<IActionResult> RegisterParticipant([FromBody] RegisterParticipantToEventRequestDTO model)
         {
@@ -29,7 +28,7 @@ namespace EventManagement.API.Controllers
             return Ok("Participant registered successfully");
         }
 
-        [Authorize(Policy = "UserPolicy")] // Доступ для пользователей и администраторов
+        [Authorize(Policy = "UserPolicy")]
         [HttpGet("event/{eventId}")]
         public async Task<IActionResult> GetParticipantsByEvent(Guid eventId)
         {
@@ -38,7 +37,7 @@ namespace EventManagement.API.Controllers
             return Ok(participantsDto);
         }
 
-        [Authorize(Policy = "AdminPolicy")] // Только администратор может удалять участников
+        [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("cancel")]
         public async Task<IActionResult> RemoveParticipantFromEvent(Guid eventId,Guid userId)
         {

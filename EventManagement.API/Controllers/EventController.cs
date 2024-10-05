@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using EventManagement.Application.DTO.Request;
 using EventManagement.Application.DTO.Response;
-using EventManagement.Application.Services;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace EventManagement.API.Controllers
 {
