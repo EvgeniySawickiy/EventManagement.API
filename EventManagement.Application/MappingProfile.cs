@@ -17,8 +17,10 @@ namespace EventManagement.Application
             CreateMap<Participant, ParticipantResponseDTO>();
             CreateMap<RegisterParticipantToEventRequestDTO, Participant>();
 
-            CreateMap<Event, EventResponseDTO>();
-            CreateMap<EventRequestDTO, Event>();
+            CreateMap<Event, EventResponseDTO>()
+                .ForMember(dest=>dest.Date, opt=>opt.MapFrom(src=>src.EventDate));
+            CreateMap<EventRequestDTO, Event>()
+                .ForMember(dest => dest.EventDate, opt => opt.MapFrom(src => src.EventDate)); ;
 
             CreateMap<ParticipantRequestDTO, Participant>();
 
