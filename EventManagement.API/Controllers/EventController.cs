@@ -122,5 +122,12 @@ namespace EventManagement.API.Controllers
 
             return Ok(new { Message = "Image uploaded successfully.", ImagePath = filePath });
         }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPagedEvents([FromQuery] PaginationParams paginationParams)
+        {
+            var pagedEvents = await _eventService.GetPagedEventsAsync(paginationParams.PageNumber,paginationParams.PageSize);
+            return Ok(pagedEvents);
+        }
     }
 }

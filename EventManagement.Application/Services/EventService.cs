@@ -4,6 +4,7 @@ using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
 using EventManagement.Core.Interfaces.Services;
 using EventManagement.Application.Services;
+using EventManagement.Application.DTO.Request;
 
 namespace EventManagement.Application.Services
 {
@@ -60,11 +61,6 @@ namespace EventManagement.Application.Services
         public async Task DeleteEventAsync(Guid id)
         {
             await _unitOfWork.Events.DeleteEventAsync(id);
-            var eventImage = _unitOfWork.Images.GetAllImagesToEventAsync().Result.First(i => i.EventId == id);
-            if (eventImage != null)
-            {
-                await _unitOfWork.Images.DeleteImageAsync(eventImage.Id);
-            }
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -95,5 +91,9 @@ namespace EventManagement.Application.Services
             return query.ToList();
         }
 
+        public async Task<List<Event>> GetPagedEventsAsync(int pageNumber, int pageSize)
+        {
+            return await _unitOfWork.Events.GetEventByPage(pageNumber,pageSize);
+        }
     }
 }

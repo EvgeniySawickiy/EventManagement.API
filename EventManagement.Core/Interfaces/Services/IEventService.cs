@@ -12,5 +12,6 @@ namespace EventManagement.Core.Interfaces.Services
         Task UpdateEventAsync(Guid eventId, Event eventEntity);
         Task DeleteEventAsync(Guid id);
         IEnumerable<Event> GetEventsByCriteriaAsync(DateTime? date, string location, string category);
+        Task<List<Event>> GetPagedEventsAsync(int page, int pageSize);
     }
 }

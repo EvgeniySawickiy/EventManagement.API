@@ -47,6 +47,14 @@ namespace EventManagement.DataAccess.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<List<Event>> GetEventByPage(int page, int pageSize)
+        {
+            return await _context.Events
+                .AsNoTracking()
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
 
         public IQueryable<Event> Query()
         {
