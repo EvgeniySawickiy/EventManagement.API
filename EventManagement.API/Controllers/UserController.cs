@@ -2,8 +2,10 @@
 using EventManagement.Application.DTO.Request;
 using EventManagement.Application.DTO.Response;
 using EventManagement.Application.Services;
+using EventManagement.Application.Validation;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -17,25 +19,36 @@ namespace EventManagement.API.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly JwtService _jwtService;
+        private readonly IValidator<RegisterRequestDTO> _RegisterValidator;
 
-        public UserController(IUserService userService, IMapper mapper, JwtService jwtService)
+        public UserController(IUserService userService, IMapper mapper, JwtService jwtService, IValidator<RegisterRequestDTO> registerValidator)
         {
             _userService = userService;
             _mapper = mapper;
             _jwtService = jwtService;
+            _RegisterValidator = registerValidator;
         }
 
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO registerModel)
         {
-            var user = _mapper.Map<User>(registerModel.UserModel);
-            var participant = _mapper.Map<Participant>(registerModel.ParticipantModel);
-            var result = await _userService.RegisterUserAsync(user,participant);
-            if (!result)
-                return BadRequest("Unable to register user");
+            var validationResult = await _RegisterValidator.ValidateAsync(registerModel);
+            if (validationResult.IsValid)
+            {
+                var user = _mapper.Map<User>(registerModel.UserModel);
+                var participant = _mapper.Map<Participant>(registerModel.ParticipantModel);
+                var result = await _userService.RegisterUserAsync(user, participant);
+                if (!result)
+                    return BadRequest("User with this username already exists");
 
-            return Ok("User registered successfully");
+                return Ok("User registered successfully");
+            }
+            else 
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new { Errors = errors });
+            }
         }
 
         [HttpPost("login")]

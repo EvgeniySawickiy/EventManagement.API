@@ -49,8 +49,7 @@ namespace EventManagement.Application.Services
             bool isDateChanged = eventEnt.EventDate != eventEntity.EventDate;
             bool isLocationChanged = eventEnt.Location != eventEntity.Location;
 
-            _mapper.Map(eventEntity, eventEnt);
-            await _unitOfWork.Events.UpdateEventAsync(eventEnt);
+            await _unitOfWork.Events.UpdateEventAsync(eventEntity);
 
             if (isDateChanged || isLocationChanged)
             {

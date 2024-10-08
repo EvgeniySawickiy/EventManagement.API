@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using EventManagement.Application.DTO.Request;
 using EventManagement.Application.DTO.Response;
+using EventManagement.Application.Validation;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,24 +17,26 @@ namespace EventManagement.API.Controllers
         private readonly IEventService _eventService;
         private readonly IImageService _imageService;
         private readonly IMapper _mapper;
+        private readonly IValidator<EventRequestDTO> _validator;
 
-        public EventController(IEventService eventService, IMapper mapper, IImageService imageService)
+        public EventController(IEventService eventService, IMapper mapper, IImageService imageService, IValidator<EventRequestDTO> validator)
         {
             _eventService = eventService;
             _mapper = mapper;
-            _imageService= imageService;
+            _imageService = imageService;
+            _validator = validator;
         }
 
         [HttpGet]
-        [Authorize(Policy = "UserPolicy")] 
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> GetEvents()
         {
             var events = await _eventService.GetAllEventsAsync();
             var eventDtos = _mapper.Map<IEnumerable<EventResponseDTO>>(events);
             return Ok(eventDtos);
         }
-        [HttpGet ("{eventId}")]
-        [Authorize(Policy = "UserPolicy")] 
+        [HttpGet("{eventId}")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> GetEventsById(Guid eventId)
         {
             var events = await _eventService.GetEventByIdAsync(eventId);
@@ -43,7 +47,7 @@ namespace EventManagement.API.Controllers
             return Ok(eventDto);
         }
         [HttpGet("byname/{eventName}")]
-        [Authorize(Policy = "UserPolicy")] 
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> GetEventsByName(string eventName)
         {
             var events = await _eventService.GetEventByNameAsync(eventName);
@@ -55,25 +59,43 @@ namespace EventManagement.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminPolicy")] 
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> AddEvent([FromBody] EventRequestDTO model)
         {
-            var eventEntity = _mapper.Map<Event>(model);
-            await _eventService.AddEventAsync(eventEntity);
-            return Ok("Event added successfully");
+            var validationResult = await _validator.ValidateAsync(model);
+            if (validationResult.IsValid)
+            {
+                var eventEntity = _mapper.Map<Event>(model);
+                await _eventService.AddEventAsync(eventEntity);
+                return Ok("Event added successfully");
+            }
+            else
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new { Errors = errors });
+            }
         }
 
         [HttpPut("{id}")]
-        [Authorize(Policy = "AdminPolicy")] 
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> UpdateEvent(Guid id, [FromBody] EventRequestDTO model)
         {
+            var validationResult = await _validator.ValidateAsync(model);
+            if (validationResult.IsValid)
+            {
             var eventEntity = _mapper.Map<Event>(model);
-            await _eventService.UpdateEventAsync(id,eventEntity);
+            await _eventService.UpdateEventAsync(id, eventEntity);
             return Ok("Event updated successfully");
+            }
+            else
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new { Errors = errors });
+            }
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminPolicy")] 
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteEvent(Guid id)
         {
             await _eventService.DeleteEventAsync(id);
@@ -118,7 +140,7 @@ namespace EventManagement.API.Controllers
             await _imageService.AddImageAsync(imageEntity);
 
             eventEntity.ImageId = imageEntity.Id;
-            await _eventService.UpdateEventAsync(eventId,eventEntity);
+            await _eventService.UpdateEventAsync(eventId, eventEntity);
 
             return Ok(new { Message = "Image uploaded successfully.", ImagePath = filePath });
         }
@@ -126,7 +148,7 @@ namespace EventManagement.API.Controllers
         [HttpGet("paged")]
         public async Task<IActionResult> GetPagedEvents([FromQuery] PaginationParams paginationParams)
         {
-            var pagedEvents = await _eventService.GetPagedEventsAsync(paginationParams.PageNumber,paginationParams.PageSize);
+            var pagedEvents = await _eventService.GetPagedEventsAsync(paginationParams.PageNumber, paginationParams.PageSize);
             return Ok(pagedEvents);
         }
     }

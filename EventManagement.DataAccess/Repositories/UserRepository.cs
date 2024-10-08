@@ -14,12 +14,12 @@ namespace EventManagement.DataAccess.Repositories
             _context = context;
         }
 
-        public async Task<User> GetByIdAsync(Guid id)
+        public async Task<User?> GetByIdAsync(Guid id)
         {
             return await _context.User.FindAsync(id);
         }
 
-        public async Task<User> GetByUsernameAsync(string username)
+        public async Task<User?> GetByUsernameAsync(string username)
         {
             return await _context.User.FirstOrDefaultAsync(u => u.Username == username);
         }

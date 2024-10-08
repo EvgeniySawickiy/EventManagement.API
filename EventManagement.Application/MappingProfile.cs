@@ -12,7 +12,7 @@ namespace EventManagement.Application
         { 
             CreateMap<User, UserResponseDTO>();
             CreateMap<UserRequestDTO, User>()
-                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password)); ;
+                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password)); 
 
             CreateMap<Participant, ParticipantResponseDTO>();
             CreateMap<RegisterParticipantToEventRequestDTO, Participant>();

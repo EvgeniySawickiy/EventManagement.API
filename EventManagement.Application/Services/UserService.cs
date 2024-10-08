@@ -28,7 +28,7 @@ namespace EventManagement.Application.Services
         public async Task<bool> RegisterUserAsync(User newUser, Participant newParticipant)
         {
             var passwordHash = HashPassword(newUser.PasswordHash);
-            if (_unitOfWork.Users.GetByUsernameAsync(newUser.Username) != null)
+            if (_unitOfWork.Users.GetByUsernameAsync(newUser.Username).Result != null)
             {
                 return false;
             }

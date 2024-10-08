@@ -1,21 +1,22 @@
 using EventManagement.API.Middlewares;
 using EventManagement.Application;
+using EventManagement.Application.DTO.Request;
 using EventManagement.Application.Services;
+using EventManagement.Application.Validation;
+using EventManagement.Core.Interfaces.Repositories;
+using EventManagement.Core.Interfaces.Services;
 using EventManagement.DataAccess;
 using EventManagement.DataAccess.Repositories;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using FluentValidation;
-using EventManagement.Application.Validation;
-using EventManagement.Core.Interfaces.Repositories;
-using EventManagement.Core.Interfaces.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Настраиваем контроллеры (Web API)
 builder.Services.AddControllers();
 
 builder.Services.AddValidatorsFromAssemblyContaining<UserRequestDTOValidator>();
@@ -28,9 +29,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventParticipantRepository, EventParticipantRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
@@ -39,16 +40,13 @@ builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// Добавляем Swagger для документирования API
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 
-    // JWT аутентификация
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -75,15 +73,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddControllers();
-
 builder.Services.AddDbContext<EventDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<JwtService>();
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -103,6 +97,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
     };
 });
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
@@ -111,8 +106,6 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
