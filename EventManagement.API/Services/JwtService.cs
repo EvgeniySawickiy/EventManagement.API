@@ -1,23 +1,23 @@
 ﻿using EventManagement.Application.DTO.Request;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace EventManagement.Application.Services
+namespace EventManagement.API.Services
 {
     public class JwtService
     {
         private readonly IConfiguration _configuration;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-        public JwtService(IConfiguration configuration)
+        public JwtService(IConfiguration configuration, IRefreshTokenRepository refreshTokenRepository)
         {
             _configuration = configuration;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
         public string GenerateToken(string username, string role)

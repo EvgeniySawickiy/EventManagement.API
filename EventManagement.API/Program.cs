@@ -1,14 +1,16 @@
 using EventManagement.API.Middlewares;
+using EventManagement.API.Services;
 using EventManagement.Application;
-using EventManagement.Application.DTO.Request;
-using EventManagement.Application.Services;
+using EventManagement.Application.Use_Cases.EventUseCases;
+using EventManagement.Application.Use_Cases.ImageUseCases;
+using EventManagement.Application.Use_Cases.ParticipantUseCases;
+using EventManagement.Application.Use_Cases.UserUseCases;
 using EventManagement.Application.Validation;
 using EventManagement.Core.Interfaces.Repositories;
 using EventManagement.Core.Interfaces.Services;
 using EventManagement.DataAccess;
 using EventManagement.DataAccess.Repositories;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -33,12 +35,29 @@ builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IParticipantService, ParticipantService>();
-builder.Services.AddScoped<IEventService, EventService>();
-builder.Services.AddScoped<IImageService, ImageService>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<GetAllEventsUseCase>();
+builder.Services.AddScoped<GetEventByIdUseCase>();
+builder.Services.AddScoped<GetEventByNameUseCase>();
+builder.Services.AddScoped<AddEventUseCase>();
+builder.Services.AddScoped<UpdateEventUseCase>();
+builder.Services.AddScoped<DeleteEventUseCase>();
+builder.Services.AddScoped<GetEventsByCriteriaUseCase>();
+builder.Services.AddScoped<GetPagedEventsUseCase>();
+
+builder.Services.AddScoped<GetParticipantByIdUseCase>();
+builder.Services.AddScoped<GetParticipantsByEventIdUseCase>();
+builder.Services.AddScoped<RegisterParticipantToEventUseCase>();
+builder.Services.AddScoped<RemoveParticipantFromEventUseCase>();
+
+builder.Services.AddScoped<AddImageUseCase>();
+
+builder.Services.AddScoped<GetUserByIdUseCase>();
+builder.Services.AddScoped<GetUserByUsernameUseCase>();
+builder.Services.AddScoped<RegisterUserUseCase>();
+builder.Services.AddScoped<ValidateCredentialsUseCase>();
+
+builder.Services.AddScoped<INotificationService, EventManagement.API.Services.NotificationService>();
+builder.Services.AddScoped<IEmailService, EventManagement.API.Services.EmailService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

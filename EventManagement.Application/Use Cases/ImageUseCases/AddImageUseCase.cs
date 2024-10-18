@@ -1,20 +1,22 @@
 ﻿using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
-using EventManagement.Core.Interfaces.Services;
 
-namespace EventManagement.Application.Services
+
+namespace EventManagement.Application.Use_Cases.ImageUseCases
 {
-    public class ImageService : IImageService
+    public class AddImageUseCase
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ImageService(IUnitOfWork unitOfWork)
+
+        public AddImageUseCase(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task AddImageAsync(Image image)
+        public async Task<Image> ExecuteAsync(Image image)
         {
             await _unitOfWork.Images.AddImageAsync(image);
+            return image;
         }
     }
 }

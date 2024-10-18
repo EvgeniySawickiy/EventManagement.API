@@ -1,5 +1,6 @@
-﻿using EventManagement.Application.DTO.Request;
-using EventManagement.Application.Services;
+﻿using EventManagement.API.Services;
+using EventManagement.Application.DTO.Request;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 

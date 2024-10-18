@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using EventManagement.Application.DTO.Request;
 using EventManagement.Application.DTO.Response;
-using EventManagement.Core.Interfaces.Services;
+using EventManagement.Application.Use_Cases.ParticipantUseCases;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,14 +12,22 @@ namespace EventManagement.API.Controllers
     [Route("api/[controller]")]
     public class ParticipantController : ControllerBase
     {
-        private readonly IParticipantService _participantService;
+        private readonly RegisterParticipantToEventUseCase _registerParticipantToEventUseCase;
+        private readonly GetParticipantsByEventIdUseCase _getParticipantsByEventUseCase;
+        private readonly RemoveParticipantFromEventUseCase _removeParticipantFromEventUseCase;
         private readonly IMapper _mapper;
         private readonly IValidator<RegisterParticipantToEventRequestDTO> _validator;
 
-
-        public ParticipantController(IParticipantService participantService, IMapper mapper, IValidator<RegisterParticipantToEventRequestDTO> validator)
+        public ParticipantController(
+         RegisterParticipantToEventUseCase registerParticipantToEventUseCase,
+         GetParticipantsByEventIdUseCase getParticipantsByEventUseCase,
+         RemoveParticipantFromEventUseCase removeParticipantFromEventUseCase,
+         IMapper mapper,
+         IValidator<RegisterParticipantToEventRequestDTO> validator)
         {
-            _participantService = participantService;
+            _registerParticipantToEventUseCase = registerParticipantToEventUseCase;
+            _getParticipantsByEventUseCase = getParticipantsByEventUseCase;
+            _removeParticipantFromEventUseCase = removeParticipantFromEventUseCase;
             _mapper = mapper;
             _validator = validator;
         }
@@ -31,8 +39,7 @@ namespace EventManagement.API.Controllers
             var validationResult = await _validator.ValidateAsync(model);
             if (validationResult.IsValid)
             {
-
-                await _participantService.RegisterParticipantToEventAsync(model.UserId, model.EventId);
+                await _registerParticipantToEventUseCase.ExecuteAsync(model.UserId, model.EventId);
                 return Ok("Participant registered successfully");
             }
             else
@@ -46,7 +53,7 @@ namespace EventManagement.API.Controllers
         [HttpGet("event/{eventId}")]
         public async Task<IActionResult> GetParticipantsByEvent(Guid eventId)
         {
-            var participants = await _participantService.GetParticipantsByEventIdAsync(eventId);
+            var participants = await _getParticipantsByEventUseCase.ExecuteAsync(eventId);
             var participantsDto = _mapper.Map<IEnumerable<ParticipantResponseDTO>>(participants);
             return Ok(participantsDto);
         }
@@ -55,7 +62,7 @@ namespace EventManagement.API.Controllers
         [HttpDelete("cancel")]
         public async Task<IActionResult> RemoveParticipantFromEvent(Guid eventId, Guid userId)
         {
-            await _participantService.RemoveParticipantFromEventAsync(eventId, userId);
+            await _removeParticipantFromEventUseCase.ExecuteAsync(eventId, userId);
             return Ok("Participant removed successfully");
         }
     }

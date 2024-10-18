@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using EventManagement.Application.Services;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
 using EventManagement.Core.Interfaces.Services;
@@ -12,7 +11,7 @@ namespace EventManagement.Tests
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<INotificationService> _notificationServiceMock;
+        private readonly Mock<INotificationService> _notificationerviceMock;
         private readonly EventService _eventService;
 
         public EventServiceTests()

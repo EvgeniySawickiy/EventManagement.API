@@ -1,25 +1,26 @@
-﻿using EventManagement.Core.Interfaces.Repositories;
+﻿using EventManagement.Application.Use_Cases.ParticipantUseCases;
+using EventManagement.Core.Interfaces.Repositories;
 using EventManagement.Core.Interfaces.Services;
 
 
-namespace EventManagement.Application.Services
+namespace EventManagement.API.Services
 {
     public class NotificationService : INotificationService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
-        private readonly IParticipantService _participantService;
+        private readonly GetParticipantsByEventIdUseCase _getParticipantsByEventIdUseCase;
 
-        public NotificationService(IUnitOfWork unitOfWork, IEmailService emailService, IParticipantService participantService)
+        public NotificationService(IUnitOfWork unitOfWork, IEmailService emailService, GetParticipantsByEventIdUseCase getParticipantsByEventIdUseCase)
         {
             _unitOfWork = unitOfWork;
             _emailService = emailService;
-            _participantService = participantService;
+            _getParticipantsByEventIdUseCase = getParticipantsByEventIdUseCase;
         }
 
         public async Task NotifyParticipantsAsync(Guid eventId, bool isDateChanged, bool isLocationChanged)
         {
-            var participants = await _participantService.GetParticipantsByEventIdAsync(eventId);
+            var participants = await _getParticipantsByEventIdUseCase.ExecuteAsync(eventId);
 
             foreach (var participant in participants)
             {

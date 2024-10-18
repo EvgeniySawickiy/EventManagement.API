@@ -1,10 +1,8 @@
-﻿
-
-using EventManagement.Core.Interfaces.Services;
+﻿using EventManagement.Core.Interfaces.Services;
 using System.Net.Mail;
 using System.Net;
 
-namespace EventManagement.Application.Services
+namespace EventManagement.API.Services
 {
     public class EmailService : IEmailService
     {

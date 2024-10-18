@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
+using EventManagement.API.Services;
 using EventManagement.Application.DTO.Request;
 using EventManagement.Application.DTO.Response;
-using EventManagement.Application.Services;
-using EventManagement.Application.Validation;
+using EventManagement.Application.Use_Cases.UserUseCases;
 using EventManagement.Core.Entity;
-using EventManagement.Core.Interfaces.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace EventManagement.API.Controllers
 {
@@ -16,60 +14,72 @@ namespace EventManagement.API.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly RegisterUserUseCase _registerUserUseCase;
+        private readonly ValidateCredentialsUseCase _validateCredentialsUseCase;
+        private readonly GetUserByIdUseCase _getUserByIdUseCase;
+        private readonly GetUserByUsernameUseCase _getUserByUsernameUseCase;
         private readonly IMapper _mapper;
         private readonly JwtService _jwtService;
-        private readonly IValidator<RegisterRequestDTO> _RegisterValidator;
+        private readonly IValidator<RegisterRequestDTO> _registerValidator;
 
-        public UserController(IUserService userService, IMapper mapper, JwtService jwtService, IValidator<RegisterRequestDTO> registerValidator)
+        public UserController(
+                RegisterUserUseCase registerUserUseCase,
+                ValidateCredentialsUseCase validateCredentialsUseCase,
+                GetUserByIdUseCase getUserByIdUseCase,
+                IMapper mapper,
+                JwtService jwtService,
+                IValidator<RegisterRequestDTO> registerValidator,
+                GetUserByUsernameUseCase getUserByUsernameUseCase)
         {
-            _userService = userService;
+            _registerUserUseCase = registerUserUseCase;
+            _validateCredentialsUseCase = validateCredentialsUseCase;
+            _getUserByIdUseCase = getUserByIdUseCase;
+            _getUserByUsernameUseCase = getUserByUsernameUseCase;
             _mapper = mapper;
             _jwtService = jwtService;
-            _RegisterValidator = registerValidator;
+            _registerValidator = registerValidator;
         }
 
-        [HttpPost("register")]
+        [HttpPost("register")]  
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO registerModel)
         {
-            var validationResult = await _RegisterValidator.ValidateAsync(registerModel);
-            if (validationResult.IsValid)
-            {
-                var user = _mapper.Map<User>(registerModel.UserModel);
-                var participant = _mapper.Map<Participant>(registerModel.ParticipantModel);
-                var result = await _userService.RegisterUserAsync(user, participant);
-                if (!result)
-                    return BadRequest("User with this username already exists");
-
-                return Ok("User registered successfully");
-            }
-            else 
+            var validationResult = await _registerValidator.ValidateAsync(registerModel);
+            if (!validationResult.IsValid)
             {
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
                 return BadRequest(new { Errors = errors });
             }
+
+            var user = _mapper.Map<User>(registerModel.UserModel);
+            var participant = _mapper.Map<Participant>(registerModel.ParticipantModel);
+
+            var result = await _registerUserUseCase.ExecuteAsync(user, participant);
+            if (!result)
+                return BadRequest("User with this username already exists");
+
+            return Ok("User registered successfully");
         }
 
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserRequestDTO model)
         {
-            var isValid = await _userService.ValidateCredentialsAsync(model.Username, model.Password);
+            var isValid = await _validateCredentialsUseCase.ExecuteAsync(model.Username, model.Password);
             if (!isValid)
                 return Unauthorized("Invalid username or password");
 
-            var user = await _userService.GetByUsernameAsync(model.Username);
+            var user = await _getUserByUsernameUseCase.ExecuteAsync(model.Username);
             var token = _jwtService.GenerateToken(user.Username, user.Role);
 
             return Ok(new { Token = token });
         }
-
         [HttpGet("{id}")]
-        [Authorize(Policy = "UserPolicy")] 
+        [Authorize(Policy = "UserPolicy")]
+
         public async Task<IActionResult> GetUserById(Guid id)
         {
-            var user = await _userService.GetByIdAsync(id);
+            var user = await _getUserByIdUseCase.ExecuteAsync(id);
             if (user == null)
                 return NotFound("User not found");
 
