@@ -1,7 +1,7 @@
 ﻿using EventManagement.Application.Exceptions;
+using EventManagement.Application.Services;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
-using EventManagement.Core.Interfaces.Services;
 
 
 namespace EventManagement.Application.Use_Cases.EventUseCases
@@ -19,7 +19,7 @@ namespace EventManagement.Application.Use_Cases.EventUseCases
 
         public async Task ExecuteAsync(Guid eventId, Event eventEntity)
         {
-            var existingEvent = await _unitOfWork.Events.GetEventByIdAsync(eventId);
+            var existingEvent = await _unitOfWork.Events.GetByIdAsync(eventId);
             if (existingEvent == null)
             {
                 throw new NotFoundException("Event not found");
@@ -29,7 +29,7 @@ namespace EventManagement.Application.Use_Cases.EventUseCases
             bool isLocationChanged = existingEvent.Location != eventEntity.Location;
 
             eventEntity.Id = eventId;
-            await _unitOfWork.Events.UpdateEventAsync(eventEntity);
+            await _unitOfWork.Events.UpdateAsync(eventEntity);
             await _unitOfWork.SaveChangesAsync();
 
             if (isDateChanged || isLocationChanged)

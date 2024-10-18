@@ -4,40 +4,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagement.DataAccess.Repositories
 {
-    public class EventParticipantRepository : IEventParticipantRepository
+    public class EventParticipantRepository :RepositoryBase<EventParticipant>, IEventParticipantRepository
     {
         private readonly EventDbContext _context;
 
-        public EventParticipantRepository(EventDbContext context)
+        public EventParticipantRepository(EventDbContext context):base(context) 
         {
             _context = context;
         }
 
-        public async Task AddParticipantToEventAsync(EventParticipant eventParticipant)
+        public new async Task<EventParticipant> GetByIdAsync(Guid id)
         {
-            await _context.EventParticipants.AddAsync(eventParticipant);
-            await _context.SaveChangesAsync();
+            return await _context.EventParticipants
+                .Include(e=>e.Participant)
+                .Include(e=>e.Event)
+                .FirstOrDefaultAsync(e=>e.Id == id);
         }
 
-        public async Task UpdateParticipantToEventAsync(EventParticipant eventParticipant)
+        public new async Task<IEnumerable<EventParticipant>> GetAllAsync()
         {
-            _context.EventParticipants.Update(eventParticipant);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteParticipantFromEventAsync(Guid eventId,Guid participantId)
-        {
-            var eventParticipantEntity = await _context.EventParticipants.FindAsync(eventId, participantId);
-            if (eventParticipantEntity != null)
-            {
-                _context.EventParticipants.Remove(eventParticipantEntity);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task<IEnumerable<EventParticipant>> GetAllParticipantsToEventAsync()
-        {
-           return await _context.EventParticipants.ToListAsync();
+            return await _context.EventParticipants
+                .Include(e => e.Participant)
+                .Include(e => e.Event)
+                .ToListAsync();
         }
     }
 }

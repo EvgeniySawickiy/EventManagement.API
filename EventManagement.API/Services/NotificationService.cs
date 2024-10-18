@@ -1,6 +1,7 @@
-﻿using EventManagement.Application.Use_Cases.ParticipantUseCases;
+﻿using EventManagement.Application.Services;
+using EventManagement.Application.Use_Cases.ParticipantUseCases;
 using EventManagement.Core.Interfaces.Repositories;
-using EventManagement.Core.Interfaces.Services;
+
 
 
 namespace EventManagement.API.Services

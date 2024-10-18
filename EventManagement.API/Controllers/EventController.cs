@@ -4,7 +4,6 @@ using EventManagement.Application.DTO.Response;
 using EventManagement.Application.Use_Cases.EventUseCases;
 using EventManagement.Application.Use_Cases.ImageUseCases;
 using EventManagement.Core.Entity;
-using EventManagement.Core.Interfaces.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

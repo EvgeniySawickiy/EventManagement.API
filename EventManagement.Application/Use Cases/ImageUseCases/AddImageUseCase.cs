@@ -15,7 +15,7 @@ namespace EventManagement.Application.Use_Cases.ImageUseCases
 
         public async Task<Image> ExecuteAsync(Image image)
         {
-            await _unitOfWork.Images.AddImageAsync(image);
+            await _unitOfWork.Images.AddAsync(image);
             return image;
         }
     }

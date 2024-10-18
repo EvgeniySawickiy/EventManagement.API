@@ -1,13 +1,13 @@
 using EventManagement.API.Middlewares;
 using EventManagement.API.Services;
 using EventManagement.Application;
+using EventManagement.Application.Services;
 using EventManagement.Application.Use_Cases.EventUseCases;
 using EventManagement.Application.Use_Cases.ImageUseCases;
 using EventManagement.Application.Use_Cases.ParticipantUseCases;
 using EventManagement.Application.Use_Cases.UserUseCases;
 using EventManagement.Application.Validation;
 using EventManagement.Core.Interfaces.Repositories;
-using EventManagement.Core.Interfaces.Services;
 using EventManagement.DataAccess;
 using EventManagement.DataAccess.Repositories;
 using FluentValidation;
@@ -56,8 +56,8 @@ builder.Services.AddScoped<GetUserByUsernameUseCase>();
 builder.Services.AddScoped<RegisterUserUseCase>();
 builder.Services.AddScoped<ValidateCredentialsUseCase>();
 
-builder.Services.AddScoped<INotificationService, EventManagement.API.Services.NotificationService>();
-builder.Services.AddScoped<IEmailService, EventManagement.API.Services.EmailService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

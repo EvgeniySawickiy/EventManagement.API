@@ -5,45 +5,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagement.DataAccess.Repositories
 {
-    public class ParticipantRepository : IParticipantRepository
+    public class ParticipantRepository :RepositoryBase<Participant>, IParticipantRepository
     {
         private readonly EventDbContext _context;
 
-        public ParticipantRepository(EventDbContext context)
+        public ParticipantRepository(EventDbContext context) :base(context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<Participant>> GetAllParticipantsAsync()
+        public new async Task<IEnumerable<Participant>> GetAllAsync()
         {
-            return await _context.Participants.ToListAsync();
+            return await _context.Participants
+                .Include(p=>p.EventParticipants)
+                .ToListAsync();
         }
 
-        public async Task<Participant> GetParticipantByIdAsync(Guid id)
+        public new async Task<Participant> GetByIdAsync(Guid id)
         {
-            return await _context.Participants.FindAsync(id);
-        }
-
-        public async Task AddParticipantAsync(Participant participant)
-        {
-            await _context.Participants.AddAsync(participant);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateParticipantAsync(Participant participant)
-        {
-            _context.Participants.Update(participant);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteParticipantAsync(Guid id)
-        {
-            var participant = await _context.Participants.FindAsync(id);
-            if (participant != null)
-            {
-                _context.Participants.Remove(participant);
-                await _context.SaveChangesAsync();
-            }
+            return await _context.Participants
+                .Include(p => p.EventParticipants)
+                .FirstOrDefaultAsync(p=>p.Id==id);
         }
     }
 }

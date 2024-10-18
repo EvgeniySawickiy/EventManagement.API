@@ -14,8 +14,8 @@ namespace EventManagement.Application.Use_Cases.ParticipantUseCases
 
         public async Task ExecuteAsync(Guid userId, Guid eventId)
         {
-            var participant = _unitOfWork.Participants.GetAllParticipantsAsync().Result.First(p => p.UserId == userId);
-            var existingParticipant = _unitOfWork.EventParticipant.GetAllParticipantsToEventAsync()
+            var participant = _unitOfWork.Participants.GetAllAsync().Result.First(p => p.UserId == userId);
+            var existingParticipant = _unitOfWork.EventParticipant.GetAllAsync()
                 .Result.FirstOrDefault(ep => ep.ParticipantId == participant.Id && ep.EventId == eventId);
 
             if (existingParticipant != null)
@@ -31,7 +31,7 @@ namespace EventManagement.Application.Use_Cases.ParticipantUseCases
                 RegistrationDate = DateTime.UtcNow,
             };
 
-            await _unitOfWork.EventParticipant.AddParticipantToEventAsync(eventParticipant);
+            await _unitOfWork.EventParticipant.AddAsync(eventParticipant);
             await _unitOfWork.SaveChangesAsync();
         }
     }

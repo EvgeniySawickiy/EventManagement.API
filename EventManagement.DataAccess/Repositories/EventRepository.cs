@@ -4,50 +4,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagement.DataAccess.Repositories
 {
-    public class EventRepository : IEventRepository
+    public class EventRepository : RepositoryBase<Event>, IEventRepository
     {
         private readonly EventDbContext _context;
 
-        public EventRepository(EventDbContext context)
+        public EventRepository(EventDbContext context):base(context) 
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<Event>> GetAllEventsAsync()
-        {
-            return await _context.Events.ToListAsync();
-        }
-
-        public async Task<Event> GetEventByIdAsync(Guid id)
+        public new async Task<Event> GetByIdAsync(Guid id)
         {
             return await _context.Events
-          .AsNoTracking()
-          .Include(e => e.Image)
-          .Include(e => e.EventParticipants)
-          .FirstOrDefaultAsync(e => e.Id == id);
+                .Include(e=>e.EventParticipants)
+                .Include(e=>e.Image)
+                .FirstOrDefaultAsync(e=>e.Id==id);
         }
 
-        public async Task AddEventAsync(Event eventEntity)
+        public new async Task<IEnumerable<Event>> GetAllAsync()
         {
-            await _context.Events.AddAsync(eventEntity);
-            await _context.SaveChangesAsync();
+            return await _context.Events
+                .Include(e => e.EventParticipants)
+                .Include(e => e.Image)
+                .ToListAsync();
         }
 
-        public async Task UpdateEventAsync(Event eventEntity)
-        {
-            _context.Events.Update(eventEntity);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteEventAsync(Guid id)
-        {
-            var eventEntity = await _context.Events.FindAsync(id);
-            if (eventEntity != null)
-            {
-                _context.Events.Remove(eventEntity);
-                await _context.SaveChangesAsync();
-            }
-        }
         public async Task<List<Event>> GetEventByPage(int page, int pageSize)
         {
             return await _context.Events

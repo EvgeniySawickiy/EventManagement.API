@@ -1,4 +1,5 @@
-﻿using EventManagement.Core.Interfaces.Repositories;
+﻿using EventManagement.Core.Entity;
+using EventManagement.Core.Interfaces.Repositories;
 
 namespace EventManagement.Application.Use_Cases.ParticipantUseCases
 {
@@ -13,8 +14,12 @@ namespace EventManagement.Application.Use_Cases.ParticipantUseCases
 
         public async Task ExecuteAsync(Guid eventId, Guid userId)
         {
-            var participant = _unitOfWork.Participants.GetAllParticipantsAsync().Result.First(p => p.UserId == userId);
-            await _unitOfWork.EventParticipant.DeleteParticipantFromEventAsync(eventId, participant.Id);
+            var participant = _unitOfWork.Participants.GetAllAsync().Result.First(p => p.UserId == userId);
+            await _unitOfWork.EventParticipant.DeleteAsync(new EventParticipant()
+            {
+                EventId = eventId,
+                ParticipantId = participant.Id
+            });
             await _unitOfWork.SaveChangesAsync();
         }
     }

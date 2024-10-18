@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using EventManagement.Application.Services;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
-using EventManagement.Core.Interfaces.Services;
 using Moq;
 using Xunit;
 

@@ -14,7 +14,7 @@ namespace EventManagement.Application.Use_Cases.EventUseCases
 
         public async Task<Event> ExecuteAsync(string eventName)
         {
-            var events = await _unitOfWork.Events.GetAllEventsAsync();
+            var events = await _unitOfWork.Events.GetAllAsync();
             return events.FirstOrDefault(e => e.Name == eventName);
         }
     }

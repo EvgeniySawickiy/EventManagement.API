@@ -14,7 +14,8 @@ namespace EventManagement.Application.Use_Cases.EventUseCases
 
         public async Task ExecuteAsync(Guid eventId)
         {
-            await _unitOfWork.Events.DeleteEventAsync(eventId);
+            var deleteEvent = _unitOfWork.Events.GetByIdAsync(eventId).Result;
+            await _unitOfWork.Events.DeleteAsync(deleteEvent);
             await _unitOfWork.SaveChangesAsync();
         }
     }

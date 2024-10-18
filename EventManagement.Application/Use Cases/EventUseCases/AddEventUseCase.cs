@@ -14,7 +14,7 @@ namespace EventManagement.Application.Use_Cases.EventUseCases
 
         public async Task<Event> ExecuteAsync(Event newEvent)
         {
-            await _unitOfWork.Events.AddEventAsync(newEvent);
+            await _unitOfWork.Events.AddAsync(newEvent);
             await _unitOfWork.SaveChangesAsync();
             return newEvent;
         }

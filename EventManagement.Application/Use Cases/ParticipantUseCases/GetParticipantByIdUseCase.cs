@@ -14,7 +14,7 @@ namespace EventManagement.Application.Use_Cases.ParticipantUseCases
 
         public async Task<Participant> ExecuteAsync(Guid id)
         {
-            return await _unitOfWork.Participants.GetParticipantByIdAsync(id);
+            return await _unitOfWork.Participants.GetByIdAsync(id);
         }
     }
 }

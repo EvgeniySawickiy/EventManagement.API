@@ -15,7 +15,7 @@ namespace EventManagement.Application.Use_Cases.EventUseCases
 
         public async Task<IEnumerable<Event>> ExecuteAsync()
         {
-            return await _unitOfWork.Events.GetAllEventsAsync();
+            return await _unitOfWork.Events.GetAllAsync();
         }
     }
 }

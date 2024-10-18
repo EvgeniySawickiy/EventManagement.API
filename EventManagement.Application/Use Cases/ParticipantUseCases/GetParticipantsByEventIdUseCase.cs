@@ -14,12 +14,12 @@ namespace EventManagement.Application.Use_Cases.ParticipantUseCases
 
         public async Task<IEnumerable<Participant>> ExecuteAsync(Guid eventId)
         {
-            List<EventParticipant> eventEntity = _unitOfWork.EventParticipant.GetAllParticipantsToEventAsync()
+            List<EventParticipant> eventEntity = _unitOfWork.EventParticipant.GetAllAsync()
                 .Result.Where(e => e.EventId == eventId).ToList();
             var participantList = new List<Participant>();
             for (int i = 0; i < eventEntity.Count; i++)
             {
-                participantList.Add(_unitOfWork.Participants.GetParticipantByIdAsync(eventEntity[i].ParticipantId).Result);
+                participantList.Add(_unitOfWork.Participants.GetByIdAsync(eventEntity[i].ParticipantId).Result);
             }
             return participantList;
         }

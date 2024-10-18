@@ -14,7 +14,7 @@ namespace EventManagement.Application.Use_Cases.EventUseCases
 
         public async Task<Event> ExecuteAsync(Guid eventId)
         {
-            return await _unitOfWork.Events.GetEventByIdAsync(eventId);
+            return await _unitOfWork.Events.GetByIdAsync(eventId);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace EventManagement.Application.Use_Cases.UserUseCases
             };
 
             await _unitOfWork.Users.AddAsync(user);
-            await _unitOfWork.Participants.AddParticipantAsync(participant);
+            await _unitOfWork.Participants.AddAsync(participant);
             await _unitOfWork.SaveChangesAsync();
 
             return true;

@@ -2,12 +2,7 @@
 
 namespace EventManagement.Core.Interfaces.Repositories
 {
-    public interface IEventParticipantRepository
+    public interface IEventParticipantRepository :IRepository<EventParticipant>
     {
-        Task AddParticipantToEventAsync(EventParticipant eventParticipant);
-        Task UpdateParticipantToEventAsync(EventParticipant eventParticipant);
-        Task DeleteParticipantFromEventAsync(Guid eventId, Guid userId);
-        Task<IEnumerable<EventParticipant>> GetAllParticipantsToEventAsync();
-
     }
 }

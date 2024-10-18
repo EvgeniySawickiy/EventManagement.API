@@ -1,6 +1,6 @@
-﻿using EventManagement.Core.Interfaces.Services;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Net;
+using EventManagement.Application.Services;
 
 namespace EventManagement.API.Services
 {
