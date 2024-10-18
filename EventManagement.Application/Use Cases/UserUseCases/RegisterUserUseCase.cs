@@ -18,7 +18,7 @@ namespace EventManagement.Application.Use_Cases.UserUseCases
             var passwordHash = HashPassword(newUser.PasswordHash);
             if (_unitOfWork.Users.GetByUsernameAsync(newUser.Username).Result != null)
             {
-                return false;
+                 throw new Exception("User with this username already exists");
             }
 
             var user = new User

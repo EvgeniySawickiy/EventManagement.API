@@ -20,15 +20,8 @@ namespace EventManagement.API.Controllers
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDTO tokenRequest)
         {
-            try
-            {
-                var (newAccessToken, newRefreshToken) = await _jwtService.GetRefreshToken(tokenRequest);
-                return Ok(new { accessToken = newAccessToken, refreshToken = newRefreshToken });
-            }
-            catch (SecurityTokenException)
-            {
-                return Unauthorized("Invalid refresh token");
-            }
+            var (newAccessToken, newRefreshToken) = await _jwtService.GetRefreshToken(tokenRequest);
+            return Ok(new { accessToken = newAccessToken, refreshToken = newRefreshToken });
         }
     }
 }

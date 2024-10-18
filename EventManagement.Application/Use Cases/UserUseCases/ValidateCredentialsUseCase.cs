@@ -17,7 +17,8 @@ namespace EventManagement.Application.Use_Cases.UserUseCases
         {
             var user = await _unitOfWork.Users.GetByUsernameAsync(username);
             if (user == null)
-                return false;
+                throw new Exception("Invalid username or password");
+
 
             var passwordHash = HashPassword(password);
             return user.PasswordHash == passwordHash;

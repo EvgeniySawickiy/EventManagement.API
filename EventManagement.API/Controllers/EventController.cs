@@ -66,8 +66,6 @@ namespace EventManagement.API.Controllers
         public async Task<IActionResult> GetEventsById(Guid eventId)
         {
             var events = await _getEventByIdUseCase.ExecuteAsync(eventId);
-            if (events == null)
-                return NotFound("Event not found");
 
             var eventDto = _mapper.Map<EventResponseDTO>(events);
             return Ok(eventDto);
@@ -90,11 +88,6 @@ namespace EventManagement.API.Controllers
         public async Task<IActionResult> AddEvent([FromBody] EventRequestDTO model)
         {
             var validationResult = await _validator.ValidateAsync(model);
-            if (!validationResult.IsValid)
-            {
-                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new { Errors = errors });
-            }
 
             var eventEntity = _mapper.Map<Event>(model);
             await _addEventUseCase.ExecuteAsync(eventEntity);
@@ -135,16 +128,7 @@ namespace EventManagement.API.Controllers
         [HttpPost("{eventId}/upload-image")]
         public async Task<IActionResult> UploadImage(Guid eventId, IFormFile imageFile)
         {
-            if (imageFile == null || imageFile.Length == 0)
-            {
-                return BadRequest("No file was uploaded.");
-            }
-
             var eventEntity = await _getEventByIdUseCase.ExecuteAsync(eventId);
-            if (eventEntity == null)
-            {
-                return NotFound("Event not found.");
-            }
 
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
             var filePath = Path.Combine("wwwroot/images", fileName);

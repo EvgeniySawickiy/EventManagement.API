@@ -37,16 +37,8 @@ namespace EventManagement.API.Controllers
         public async Task<IActionResult> RegisterParticipant([FromBody] RegisterParticipantToEventRequestDTO model)
         {
             var validationResult = await _validator.ValidateAsync(model);
-            if (validationResult.IsValid)
-            {
                 await _registerParticipantToEventUseCase.ExecuteAsync(model.UserId, model.EventId);
                 return Ok("Participant registered successfully");
-            }
-            else
-            {
-                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new { Errors = errors });
-            }
         }
 
         [Authorize(Policy = "UserPolicy")]
