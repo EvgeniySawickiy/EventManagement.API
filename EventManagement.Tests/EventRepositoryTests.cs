@@ -1,7 +1,8 @@
 ﻿using EventManagement.Core.Entity;
-using EventManagement.DataAccess;
 using EventManagement.DataAccess.Repositories;
+using EventManagement.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 
 namespace EventManagement.Tests
@@ -9,63 +10,110 @@ namespace EventManagement.Tests
     public class EventRepositoryTests
     {
         private readonly EventDbContext _context;
-        private readonly EventRepository _repository;
+        private readonly EventRepository _eventRepository;
 
         public EventRepositoryTests()
         {
             var options = new DbContextOptionsBuilder<EventDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .UseInMemoryDatabase(databaseName: "EventDatabase")
                 .Options;
 
             _context = new EventDbContext(options);
-            _repository = new EventRepository(_context);
+            _eventRepository = new EventRepository(_context);
         }
 
         [Fact]
-        public async Task GetAllEventsAsync_ShouldReturnAllEvents()
+        public async Task GetByIdAsync_ExistingId_ReturnsEvent()
         {
             // Arrange
-            _context.Events.Add(new Event { Id = Guid.NewGuid(), Name = "Event1", Category = "New Category", Description = "Description", Location = "New Location" });
-            _context.Events.Add(new Event { Id = Guid.NewGuid(), Name = "Event2", Category = "New Category", Description = "Description", Location = "New Location" });
+            var eventId = Guid.NewGuid();
+            var eventEntity = new Event
+            {
+                Id = eventId,
+                Name = "Test Event",
+                Description = "Test Description",
+                Location = "Test Location",
+                Category = "Test Category"
+            };
+
+            _context.Events.Add(eventEntity);
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetAllEventsAsync();
+            var result = await _eventRepository.GetByIdAsync(eventId);
 
             // Assert
+            Assert.NotNull(result);
+            Assert.Equal(eventId, result.Id);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ReturnsAllEvents()
+        {
+            // Arrange
+            var events = new List<Event>
+        {
+            new Event { Id = Guid.NewGuid(), Name = "Event 1", Description = "Description 1", Location = "Location 1", Category = "Category 1" },
+            new Event { Id = Guid.NewGuid(), Name = "Event 2", Description = "Description 2", Location = "Location 2", Category = "Category 2" }
+        };
+
+            _context.Events.AddRange(events);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var result = await _eventRepository.GetAllAsync();
+
+            // Assert
+            Assert.NotNull(result);
             Assert.Equal(2, result.Count());
         }
 
         [Fact]
-        public async Task AddEventAsync_ShouldAddEventToDatabase()
+        public async Task GetEventByPage_ReturnsPaginatedEvents()
         {
             // Arrange
-            var newEvent = new Event { Id = Guid.NewGuid(), Name = "New Event", Category="New Category", Description="Description",Location="New Location" };
-
-            // Act
-            await _repository.AddEventAsync(newEvent);
-
-            // Assert
-            var addedEvent = await _context.Events.FirstOrDefaultAsync(e => e.Id == newEvent.Id);
-            Assert.NotNull(addedEvent);
-            Assert.Equal("New Event", addedEvent.Name);
-        }
-
-
-        [Fact]
-        public async Task GetEventByIdAsync_ShouldReturnEvent_WhenEventExists()
+            var events = new List<Event>
         {
-            // Arrange
-            var eventId = Guid.NewGuid();
-            _context.Events.Add(new Event { Id = eventId, Name = "Test Event", Category = "New Category", Description = "Description", Location = "New Location" });
+            new Event { Id = Guid.NewGuid(), Name = "Event 1", Description = "Description 1", Location = "Location 1", Category = "Category 1" },
+            new Event { Id = Guid.NewGuid(), Name = "Event 2", Description = "Description 2", Location = "Location 2", Category = "Category 2" },
+            new Event { Id = Guid.NewGuid(), Name = "Event 3", Description = "Description 3", Location = "Location 3", Category = "Category 3" },
+            new Event { Id = Guid.NewGuid(), Name = "Event 4", Description = "Description 4", Location = "Location 4", Category = "Category 4" },
+            new Event { Id = Guid.NewGuid(), Name = "Event 5", Description = "Description 5", Location = "Location 5", Category = "Category 5" }
+        };
+
+            _context.Events.AddRange(events);
             await _context.SaveChangesAsync();
 
+            int page = 1;
+            int pageSize = 2;
+
             // Act
-            var result = await _repository.GetEventByIdAsync(eventId);
+            var result = await _eventRepository.GetEventByPage(page, pageSize);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("Test Event", result.Name);
+            Assert.Equal(pageSize, result.Count());
+        }
+
+        [Fact]
+        public void Query_ReturnsQueryableEvents()
+        {
+            // Arrange
+            var events = new List<Event>
+        {
+            new Event { Id = Guid.NewGuid(), Name = "Event 1", Description = "Description 1", Location = "Location 1", Category = "Category 1" },
+            new Event { Id = Guid.NewGuid(), Name = "Event 2", Description = "Description 2", Location = "Location 2", Category = "Category 2" }
+        };
+
+            _context.Events.AddRange(events);
+            _context.SaveChanges();
+
+            // Act
+            var result = _eventRepository.Query();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
         }
     }
 }
