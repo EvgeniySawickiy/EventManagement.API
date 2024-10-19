@@ -40,11 +40,11 @@ namespace EventManagement.API.Controllers
             _registerValidator = registerValidator;
         }
 
-        [HttpPost("register")]  
+        [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO registerModel)
         {
-            var validationResult = await _registerValidator.ValidateAsync(registerModel);
+            await _registerValidator.ValidateAsync(registerModel);
 
             var user = _mapper.Map<User>(registerModel.UserModel);
             var participant = _mapper.Map<Participant>(registerModel.ParticipantModel);
@@ -58,7 +58,7 @@ namespace EventManagement.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserRequestDTO model)
         {
-            var isValid = await _validateCredentialsUseCase.ExecuteAsync(model.Username, model.Password);
+            await _validateCredentialsUseCase.ExecuteAsync(model.Username, model.Password);
 
             var user = await _getUserByUsernameUseCase.ExecuteAsync(model.Username);
             var token = _jwtService.GenerateToken(user.Username, user.Role);

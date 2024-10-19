@@ -8,7 +8,7 @@ namespace EventManagement.DataAccess.Repositories
     {
         private readonly EventDbContext _context;
 
-        public EventRepository(EventDbContext context):base(context) 
+        public EventRepository(EventDbContext context) : base(context)
         {
             _context = context;
         }
@@ -16,9 +16,10 @@ namespace EventManagement.DataAccess.Repositories
         public new async Task<Event> GetByIdAsync(Guid id)
         {
             return await _context.Events
-                .Include(e=>e.EventParticipants)
-                .Include(e=>e.Image)
-                .FirstOrDefaultAsync(e=>e.Id==id);
+                .Include(e => e.EventParticipants)
+                .Include(e => e.Image)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public new async Task<IEnumerable<Event>> GetAllAsync()
@@ -26,6 +27,7 @@ namespace EventManagement.DataAccess.Repositories
             return await _context.Events
                 .Include(e => e.EventParticipants)
                 .Include(e => e.Image)
+                .AsNoTracking()
                 .ToListAsync();
         }
 

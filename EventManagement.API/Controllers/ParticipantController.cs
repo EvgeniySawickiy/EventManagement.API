@@ -36,9 +36,9 @@ namespace EventManagement.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterParticipant([FromBody] RegisterParticipantToEventRequestDTO model)
         {
-            var validationResult = await _validator.ValidateAsync(model);
-                await _registerParticipantToEventUseCase.ExecuteAsync(model.UserId, model.EventId);
-                return Ok("Participant registered successfully");
+            await _registerParticipantToEventUseCase.ExecuteAsync(model.UserId, model.EventId);
+
+            return Ok("Participant registered successfully");
         }
 
         [Authorize(Policy = "UserPolicy")]
@@ -47,6 +47,7 @@ namespace EventManagement.API.Controllers
         {
             var participants = await _getParticipantsByEventUseCase.ExecuteAsync(eventId);
             var participantsDto = _mapper.Map<IEnumerable<ParticipantResponseDTO>>(participants);
+
             return Ok(participantsDto);
         }
 
@@ -55,6 +56,7 @@ namespace EventManagement.API.Controllers
         public async Task<IActionResult> RemoveParticipantFromEvent(Guid eventId, Guid userId)
         {
             await _removeParticipantFromEventUseCase.ExecuteAsync(eventId, userId);
+
             return Ok("Participant removed successfully");
         }
     }

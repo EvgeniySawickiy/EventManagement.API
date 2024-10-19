@@ -1,6 +1,7 @@
 using EventManagement.API.Middlewares;
 using EventManagement.API.Services;
 using EventManagement.Application;
+using EventManagement.Application.Attributes;
 using EventManagement.Application.Services;
 using EventManagement.Application.Use_Cases.EventUseCases;
 using EventManagement.Application.Use_Cases.ImageUseCases;
@@ -20,6 +21,11 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidateModelAttribute>();
+});
 
 builder.Services.AddValidatorsFromAssemblyContaining<UserRequestDTOValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<EventRequestDTOValidator>();

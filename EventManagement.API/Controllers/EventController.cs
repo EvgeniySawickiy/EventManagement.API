@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EventManagement.Application.Attributes;
 using EventManagement.Application.DTO.Request;
 using EventManagement.Application.DTO.Response;
 using EventManagement.Application.Use_Cases.EventUseCases;
@@ -87,8 +88,6 @@ namespace EventManagement.API.Controllers
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> AddEvent([FromBody] EventRequestDTO model)
         {
-            var validationResult = await _validator.ValidateAsync(model);
-
             var eventEntity = _mapper.Map<Event>(model);
             await _addEventUseCase.ExecuteAsync(eventEntity);
             return Ok("Event added successfully");
@@ -98,13 +97,6 @@ namespace EventManagement.API.Controllers
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> UpdateEvent(Guid id, [FromBody] EventRequestDTO model)
         {
-            var validationResult = await _validator.ValidateAsync(model);
-            if (!validationResult.IsValid)
-            {
-                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new { Errors = errors });
-            }
-
             var eventEntity = _mapper.Map<Event>(model);
             await _updateEventUseCase.ExecuteAsync(id, eventEntity);
             return Ok("Event updated successfully");

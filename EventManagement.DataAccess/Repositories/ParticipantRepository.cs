@@ -18,6 +18,7 @@ namespace EventManagement.DataAccess.Repositories
         {
             return await _context.Participants
                 .Include(p=>p.EventParticipants)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -25,6 +26,7 @@ namespace EventManagement.DataAccess.Repositories
         {
             return await _context.Participants
                 .Include(p => p.EventParticipants)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p=>p.Id==id);
         }
     }
