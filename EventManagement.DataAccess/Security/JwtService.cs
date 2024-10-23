@@ -1,13 +1,14 @@
 ﻿using EventManagement.Application.DTO.Request;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace EventManagement.API.Services
+namespace EventManagement.Infrastructure.Security
 {
     public class JwtService
     {
@@ -84,11 +85,11 @@ namespace EventManagement.API.Services
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var tokenValidationParameters = new TokenValidationParameters
             {
-                ValidateAudience = false, 
-                ValidateIssuer = false,  
+                ValidateAudience = false,
+                ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"])),
-                ValidateLifetime = false 
+                ValidateLifetime = false
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

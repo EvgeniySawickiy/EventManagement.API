@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using EventManagement.API.Services;
 using EventManagement.Application.DTO.Request;
 using EventManagement.Application.DTO.Response;
 using EventManagement.Application.Use_Cases.UserUseCases;
 using EventManagement.Core.Entity;
+using EventManagement.Infrastructure.Security;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

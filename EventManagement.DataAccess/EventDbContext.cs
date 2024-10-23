@@ -1,8 +1,8 @@
 ﻿using EventManagement.Core.Entity;
-using EventManagement.DataAccess.Configurations;
+using EventManagement.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
 
-namespace EventManagement.DataAccess
+namespace EventManagement.Infrastructure
 {
     public class EventDbContext : DbContext
     {

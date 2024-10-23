@@ -2,7 +2,7 @@
 using System.Net;
 using EventManagement.Application.Services;
 
-namespace EventManagement.API.Services
+namespace EventManagement.EventManagement.Infrastructure.Email
 {
     public class EmailService : IEmailService
     {

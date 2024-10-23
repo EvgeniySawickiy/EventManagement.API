@@ -2,9 +2,7 @@
 using EventManagement.Application.Use_Cases.ParticipantUseCases;
 using EventManagement.Core.Interfaces.Repositories;
 
-
-
-namespace EventManagement.API.Services
+namespace EventManagement.Infrastructure.Notifications
 {
     public class NotificationService : INotificationService
     {

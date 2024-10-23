@@ -58,6 +58,7 @@ namespace EventManagement.API.Controllers
         public async Task<IActionResult> GetEvents()
         {
             var events = await _getAllEventsUseCase.ExecuteAsync();
+
             var eventDtos = _mapper.Map<IEnumerable<EventResponseDTO>>(events);
             return Ok(eventDtos);
         }
@@ -77,8 +78,6 @@ namespace EventManagement.API.Controllers
         public async Task<IActionResult> GetEventsByName(string eventName)
         {
             var events = await _getEventByNameUseCase.ExecuteAsync(eventName);
-            if (events == null)
-                return NotFound("Event not found");
 
             var eventDto = _mapper.Map<EventResponseDTO>(events);
             return Ok(eventDto);
@@ -89,6 +88,7 @@ namespace EventManagement.API.Controllers
         public async Task<IActionResult> AddEvent([FromBody] EventRequestDTO model)
         {
             var eventEntity = _mapper.Map<Event>(model);
+
             await _addEventUseCase.ExecuteAsync(eventEntity);
             return Ok("Event added successfully");
         }
@@ -98,6 +98,7 @@ namespace EventManagement.API.Controllers
         public async Task<IActionResult> UpdateEvent(Guid id, [FromBody] EventRequestDTO model)
         {
             var eventEntity = _mapper.Map<Event>(model);
+
             await _updateEventUseCase.ExecuteAsync(id, eventEntity);
             return Ok("Event updated successfully");
         }

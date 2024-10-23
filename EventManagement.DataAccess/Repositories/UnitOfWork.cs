@@ -1,6 +1,6 @@
 ﻿using EventManagement.Core.Interfaces.Repositories;
 
-namespace EventManagement.DataAccess.Repositories
+namespace EventManagement.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {

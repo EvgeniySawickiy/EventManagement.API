@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EventManagement.DataAccess.Configurations
+namespace EventManagement.Infrastructure.Configurations
 {
     public class ParticipantConfiguration : IEntityTypeConfiguration<Participant>
     {

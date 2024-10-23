@@ -22,7 +22,7 @@
     <ProjectReference Include="..\EventManagement.API\EventManagement.API.csproj" />
     <ProjectReference Include="..\EventManagement.Application\EventManagement.Application.csproj" />
     <ProjectReference Include="..\EventManagement.Core\EventManagement.Core.csproj" />
-    <ProjectReference Include="..\EventManagement.DataAccess\EventManagement.DataAccess.csproj" />
+    <ProjectReference Include="..\EventManagement.DataAccess\EventManagement.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

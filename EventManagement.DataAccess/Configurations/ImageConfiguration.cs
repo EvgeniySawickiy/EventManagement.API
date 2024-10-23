@@ -1,7 +1,7 @@
 ﻿using EventManagement.Core.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace EventManagement.DataAccess.Configurations
+namespace EventManagement.Infrastructure.Configurations
 {
     public class ImageConfiguration : IEntityTypeConfiguration<Image>
     {

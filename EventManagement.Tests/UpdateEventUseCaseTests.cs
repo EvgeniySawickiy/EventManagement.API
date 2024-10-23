@@ -1,11 +1,9 @@
-﻿using EventManagement.API.Services;
-using EventManagement.Application.Exceptions;
-using EventManagement.Application.Services;
+﻿using EventManagement.Application.Services;
 using EventManagement.Application.Use_Cases.EventUseCases;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
-using EventManagement.DataAccess.Repositories;
-using EventManagement.DataAccess;
+using EventManagement.Infrastructure.Repositories;
+using EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;

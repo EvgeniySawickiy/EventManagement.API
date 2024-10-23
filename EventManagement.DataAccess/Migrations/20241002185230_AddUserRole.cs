@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace EventManagement.DataAccess.Migrations
+namespace EventManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddUserRole : Migration

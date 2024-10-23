@@ -2,7 +2,7 @@
 using EventManagement.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace EventManagement.DataAccess.Repositories
+namespace EventManagement.Infrastructure.Repositories
 {
     public class RefreshTokenRepository : IRefreshTokenRepository
     {
