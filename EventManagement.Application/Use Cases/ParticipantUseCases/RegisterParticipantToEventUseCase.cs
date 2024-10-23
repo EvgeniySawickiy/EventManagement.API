@@ -1,5 +1,6 @@
 ﻿using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventManagement.Application.Use_Cases.ParticipantUseCases
 {
@@ -14,25 +15,30 @@ namespace EventManagement.Application.Use_Cases.ParticipantUseCases
 
         public async Task ExecuteAsync(Guid userId, Guid eventId)
         {
-            var participant = _unitOfWork.Participants.GetAllAsync().Result.First(p => p.UserId == userId);
-            var existingParticipant = _unitOfWork.EventParticipant.GetAllAsync()
-                .Result.FirstOrDefault(ep => ep.ParticipantId == participant.Id && ep.EventId == eventId);
+            var participant = await _unitOfWork.Participants.Query().Where(p=>p.UserId == userId).FirstOrDefaultAsync();
 
-            if (existingParticipant != null)
+            if (participant == null)
             {
-                throw new Exception("Participant is already registered for this event.");
+                throw new Exception("Participant does not exist");
             }
 
-            var eventParticipant = new EventParticipant
-            {
-                Id = Guid.NewGuid(),
-                EventId = eventId,
-                ParticipantId = participant.Id,
-                RegistrationDate = DateTime.UtcNow,
-            };
+            var existingParticipant = await _unitOfWork.EventParticipant.Query().Where(ep => ep.ParticipantId == participant.Id && ep.EventId == eventId).FirstOrDefaultAsync();
 
-            await _unitOfWork.EventParticipant.AddAsync(eventParticipant);
-            await _unitOfWork.SaveChangesAsync();
+                if (existingParticipant != null)
+                {
+                    throw new Exception("Participant is already registered for this event.");
+                }
+
+                var eventParticipant = new EventParticipant
+                {
+                    Id = Guid.NewGuid(),
+                    EventId = eventId,
+                    ParticipantId = participant.Id,
+                    RegistrationDate = DateTime.UtcNow,
+                };
+
+                await _unitOfWork.EventParticipant.AddAsync(eventParticipant);
+                await _unitOfWork.SaveChangesAsync();
         }
     }
 

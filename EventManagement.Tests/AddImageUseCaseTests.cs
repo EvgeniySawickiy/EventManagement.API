@@ -30,7 +30,7 @@ namespace EventManagement.Tests
             var image = new Image { Id = Guid.NewGuid(), FilePath = "test.jpg", EventId = eventId };
 
             // Act
-            await _addImageUseCase.ExecuteAsync(image);
+            await _addImageUseCase.ExecuteAsync(image,image.FilePath);
 
             // Assert
             _imageRepositoryMock.Verify(x => x.AddAsync(image), Times.Once);

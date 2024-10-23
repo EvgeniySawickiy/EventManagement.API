@@ -1,5 +1,7 @@
 ﻿using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 
 namespace EventManagement.Application.Use_Cases.ImageUseCases
@@ -13,10 +15,26 @@ namespace EventManagement.Application.Use_Cases.ImageUseCases
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Image> ExecuteAsync(Image image)
+        public async Task<Event> ExecuteAsync(Guid eventId, IFormFile imageFile)
         {
-            await _unitOfWork.Images.AddAsync(image);
-            return image;
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
+            var filePath = Path.Combine("wwwroot/images", fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            var imageEntity = new Image
+            {
+                Id = Guid.NewGuid(),
+                FilePath = filePath,
+                EventId = eventId
+            };
+            await _unitOfWork.Images.AddAsync(imageEntity);
+            var updatebleEvent = _unitOfWork.Events.GetByIdAsync(eventId);
+            updatebleEvent.Result.ImageId = imageEntity.Id;
+            return updatebleEvent.Result;
         }
     }
 }

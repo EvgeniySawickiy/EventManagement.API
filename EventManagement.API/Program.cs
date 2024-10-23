@@ -1,7 +1,7 @@
 using EventManagement.API.Middlewares;
 using EventManagement.Application;
 using EventManagement.Application.Attributes;
-using EventManagement.Application.Services;
+using EventManagement.Application.Interfaces;
 using EventManagement.Application.Use_Cases.EventUseCases;
 using EventManagement.Application.Use_Cases.ImageUseCases;
 using EventManagement.Application.Use_Cases.ParticipantUseCases;
@@ -51,6 +51,7 @@ builder.Services.AddScoped<UpdateEventUseCase>();
 builder.Services.AddScoped<DeleteEventUseCase>();
 builder.Services.AddScoped<GetEventsByCriteriaUseCase>();
 builder.Services.AddScoped<GetPagedEventsUseCase>();
+builder.Services.AddScoped<LoginUserUseCase>();
 
 builder.Services.AddScoped<GetParticipantByIdUseCase>();
 builder.Services.AddScoped<GetParticipantsByEventIdUseCase>();
@@ -66,6 +67,7 @@ builder.Services.AddScoped<ValidateCredentialsUseCase>();
 
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

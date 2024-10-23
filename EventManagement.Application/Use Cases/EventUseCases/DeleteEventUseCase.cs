@@ -1,4 +1,6 @@
-﻿using EventManagement.Core.Interfaces.Repositories;
+﻿using EventManagement.Application.Exceptions;
+using EventManagement.Core.Interfaces.Repositories;
+using Microsoft.Extensions.Logging;
 
 
 namespace EventManagement.Application.Use_Cases.EventUseCases
@@ -14,8 +16,13 @@ namespace EventManagement.Application.Use_Cases.EventUseCases
 
         public async Task ExecuteAsync(Guid eventId)
         {
-            var deleteEvent = _unitOfWork.Events.GetByIdAsync(eventId).Result;
-            await _unitOfWork.Events.DeleteAsync(deleteEvent);
+            var eventEntity = await _unitOfWork.Events.GetByIdAsync(eventId);
+            if (eventEntity == null)
+            {
+                throw new NotFoundException("Event not found");
+            }
+
+            await _unitOfWork.Events.DeleteAsync(eventEntity);
             await _unitOfWork.SaveChangesAsync();
         }
     }

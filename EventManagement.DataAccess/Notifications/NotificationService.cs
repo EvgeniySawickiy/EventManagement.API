@@ -1,6 +1,7 @@
-﻿using EventManagement.Application.Services;
+﻿using EventManagement.Application.Interfaces;
 using EventManagement.Application.Use_Cases.ParticipantUseCases;
 using EventManagement.Core.Interfaces.Repositories;
+
 
 namespace EventManagement.Infrastructure.Notifications
 {

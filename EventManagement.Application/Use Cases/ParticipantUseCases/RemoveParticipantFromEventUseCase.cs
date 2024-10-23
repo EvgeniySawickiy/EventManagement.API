@@ -1,5 +1,7 @@
-﻿using EventManagement.Core.Entity;
+﻿using AutoMapper.Execution;
+using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventManagement.Application.Use_Cases.ParticipantUseCases
 {
@@ -14,13 +16,19 @@ namespace EventManagement.Application.Use_Cases.ParticipantUseCases
 
         public async Task ExecuteAsync(Guid eventId, Guid userId)
         {
-            var participant = _unitOfWork.Participants.GetAllAsync().Result.First(p => p.UserId == userId);
-            await _unitOfWork.EventParticipant.DeleteAsync(new EventParticipant()
+            var participant =  await _unitOfWork.Participants.Query().FirstOrDefaultAsync(p => p.UserId == userId);
+            if (participant == null)
             {
-                EventId = eventId,
-                ParticipantId = participant.Id
-            });
-            await _unitOfWork.SaveChangesAsync();
+                throw new Exception("This member does not exist");
+            }
+            await _unitOfWork.EventParticipant.DeleteAsync(new EventParticipant()
+                {
+                    EventId = eventId,
+                    ParticipantId = participant.Id
+                });
+                await _unitOfWork.SaveChangesAsync();
+
+            
         }
     }
 }

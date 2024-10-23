@@ -28,5 +28,10 @@ namespace EventManagement.Infrastructure.Repositories
                 .Include(e => e.Event)
                 .ToListAsync();
         }
+
+        public IQueryable<EventParticipant> Query()
+        {
+            return _context.EventParticipants.AsQueryable();
+        }
     }
 }

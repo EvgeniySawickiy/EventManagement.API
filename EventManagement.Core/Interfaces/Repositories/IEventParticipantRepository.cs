@@ -4,5 +4,6 @@ namespace EventManagement.Core.Interfaces.Repositories
 {
     public interface IEventParticipantRepository :IRepository<EventParticipant>
     {
+        IQueryable<EventParticipant> Query();
     }
 }

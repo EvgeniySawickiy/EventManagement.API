@@ -4,7 +4,6 @@ using EventManagement.Application.DTO.Response;
 using EventManagement.Application.Use_Cases.UserUseCases;
 using EventManagement.Core.Entity;
 using EventManagement.Infrastructure.Security;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +17,9 @@ namespace EventManagement.API.Controllers
         private readonly ValidateCredentialsUseCase _validateCredentialsUseCase;
         private readonly GetUserByIdUseCase _getUserByIdUseCase;
         private readonly GetUserByUsernameUseCase _getUserByUsernameUseCase;
+        private readonly LoginUserUseCase _loginUserUseCase;
         private readonly IMapper _mapper;
         private readonly JwtService _jwtService;
-        private readonly IValidator<RegisterRequestDTO> _registerValidator;
 
         public UserController(
                 RegisterUserUseCase registerUserUseCase,
@@ -28,8 +27,8 @@ namespace EventManagement.API.Controllers
                 GetUserByIdUseCase getUserByIdUseCase,
                 IMapper mapper,
                 JwtService jwtService,
-                IValidator<RegisterRequestDTO> registerValidator,
-                GetUserByUsernameUseCase getUserByUsernameUseCase)
+                GetUserByUsernameUseCase getUserByUsernameUseCase,
+                LoginUserUseCase loginUserUseCase)
         {
             _registerUserUseCase = registerUserUseCase;
             _validateCredentialsUseCase = validateCredentialsUseCase;
@@ -37,15 +36,13 @@ namespace EventManagement.API.Controllers
             _getUserByUsernameUseCase = getUserByUsernameUseCase;
             _mapper = mapper;
             _jwtService = jwtService;
-            _registerValidator = registerValidator;
+            _loginUserUseCase = loginUserUseCase;
         }
 
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO registerModel)
         {
-            await _registerValidator.ValidateAsync(registerModel);
-
             var user = _mapper.Map<User>(registerModel.UserModel);
             var participant = _mapper.Map<Participant>(registerModel.ParticipantModel);
 
@@ -58,10 +55,7 @@ namespace EventManagement.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserRequestDTO model)
         {
-            await _validateCredentialsUseCase.ExecuteAsync(model.Username, model.Password);
-
-            var user = await _getUserByUsernameUseCase.ExecuteAsync(model.Username);
-            var token = _jwtService.GenerateToken(user.Username, user.Role);
+            var token =  await _loginUserUseCase.ExecuteAsync(model.Username, model.Password);
 
             return Ok(new { Token = token });
         }

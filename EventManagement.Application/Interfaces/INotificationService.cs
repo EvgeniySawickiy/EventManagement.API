@@ -1,6 +1,4 @@
-﻿
-
-namespace EventManagement.Application.Services
+﻿namespace EventManagement.Application.Interfaces
 {
     public interface INotificationService
     {

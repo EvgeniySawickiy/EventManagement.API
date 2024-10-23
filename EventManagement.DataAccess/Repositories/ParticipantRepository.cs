@@ -29,5 +29,10 @@ namespace EventManagement.Infrastructure.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p=>p.Id==id);
         }
+
+        public IQueryable<Participant> Query()
+        {
+            return _context.Participants.AsQueryable();
+        }
     }
 }

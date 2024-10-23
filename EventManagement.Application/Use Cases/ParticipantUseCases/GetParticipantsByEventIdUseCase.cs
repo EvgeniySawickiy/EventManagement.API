@@ -14,8 +14,9 @@ namespace EventManagement.Application.Use_Cases.ParticipantUseCases
 
         public async Task<IEnumerable<Participant>> ExecuteAsync(Guid eventId)
         {
-            List<EventParticipant> eventEntity = _unitOfWork.EventParticipant.GetAllAsync()
-                .Result.Where(e => e.EventId == eventId).ToList();
+            List<EventParticipant> eventEntity = _unitOfWork.EventParticipant.Query()
+                .Where(e => e.EventId == eventId).ToList();
+
             var participantList = new List<Participant>();
             for (int i = 0; i < eventEntity.Count; i++)
             {

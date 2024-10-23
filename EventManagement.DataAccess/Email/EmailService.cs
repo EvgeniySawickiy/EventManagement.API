@@ -1,6 +1,6 @@
 ﻿using System.Net.Mail;
 using System.Net;
-using EventManagement.Application.Services;
+using EventManagement.Application.Interfaces;
 
 namespace EventManagement.EventManagement.Infrastructure.Email
 {

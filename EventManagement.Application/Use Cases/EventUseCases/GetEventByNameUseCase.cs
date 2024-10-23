@@ -1,5 +1,6 @@
 ﻿using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventManagement.Application.Use_Cases.EventUseCases
 {
@@ -14,8 +15,7 @@ namespace EventManagement.Application.Use_Cases.EventUseCases
 
         public async Task<Event> ExecuteAsync(string eventName)
         {
-            var events = await _unitOfWork.Events.GetAllAsync();
-            return events.FirstOrDefault(e => e.Name == eventName);
+            return await _unitOfWork.Events.Query().Where(e => e.Name == eventName).FirstOrDefaultAsync();
         }
     }
 }

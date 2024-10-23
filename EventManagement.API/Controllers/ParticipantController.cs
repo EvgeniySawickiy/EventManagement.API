@@ -16,20 +16,17 @@ namespace EventManagement.API.Controllers
         private readonly GetParticipantsByEventIdUseCase _getParticipantsByEventUseCase;
         private readonly RemoveParticipantFromEventUseCase _removeParticipantFromEventUseCase;
         private readonly IMapper _mapper;
-        private readonly IValidator<RegisterParticipantToEventRequestDTO> _validator;
 
         public ParticipantController(
          RegisterParticipantToEventUseCase registerParticipantToEventUseCase,
          GetParticipantsByEventIdUseCase getParticipantsByEventUseCase,
          RemoveParticipantFromEventUseCase removeParticipantFromEventUseCase,
-         IMapper mapper,
-         IValidator<RegisterParticipantToEventRequestDTO> validator)
+         IMapper mapper)
         {
             _registerParticipantToEventUseCase = registerParticipantToEventUseCase;
             _getParticipantsByEventUseCase = getParticipantsByEventUseCase;
             _removeParticipantFromEventUseCase = removeParticipantFromEventUseCase;
             _mapper = mapper;
-            _validator = validator;
         }
 
         [Authorize(Policy = "UserPolicy")]
@@ -51,7 +48,6 @@ namespace EventManagement.API.Controllers
             return Ok(participantsDto);
         }
 
-        [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("cancel")]
         public async Task<IActionResult> RemoveParticipantFromEvent(Guid eventId, Guid userId)
         {

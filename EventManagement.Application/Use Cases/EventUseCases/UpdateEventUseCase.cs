@@ -1,5 +1,5 @@
 ﻿using EventManagement.Application.Exceptions;
-using EventManagement.Application.Services;
+using EventManagement.Application.Interfaces;
 using EventManagement.Core.Entity;
 using EventManagement.Core.Interfaces.Repositories;
 

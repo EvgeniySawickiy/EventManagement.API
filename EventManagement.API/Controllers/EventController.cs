@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using EventManagement.Application.Attributes;
 using EventManagement.Application.DTO.Request;
 using EventManagement.Application.DTO.Response;
 using EventManagement.Application.Use_Cases.EventUseCases;
 using EventManagement.Application.Use_Cases.ImageUseCases;
 using EventManagement.Core.Entity;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +14,6 @@ namespace EventManagement.API.Controllers
     public class EventController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IValidator<EventRequestDTO> _validator;
         private readonly AddImageUseCase _addImageUseCase;
         private readonly GetAllEventsUseCase _getAllEventsUseCase;
         private readonly GetEventByIdUseCase _getEventByIdUseCase;
@@ -30,7 +27,6 @@ namespace EventManagement.API.Controllers
         public EventController(
        IMapper mapper,
        AddImageUseCase addImageUseCase,
-       IValidator<EventRequestDTO> validator,
        GetAllEventsUseCase getAllEventsUseCase,
        GetEventByIdUseCase getEventByIdUseCase,
        GetEventByNameUseCase getEventByNameUseCase,
@@ -42,7 +38,6 @@ namespace EventManagement.API.Controllers
         {
             _mapper = mapper;
             _addImageUseCase = addImageUseCase;
-            _validator = validator;
             _getAllEventsUseCase = getAllEventsUseCase;
             _getEventByIdUseCase = getEventByIdUseCase;
             _getEventByNameUseCase = getEventByNameUseCase;
@@ -121,28 +116,11 @@ namespace EventManagement.API.Controllers
         [HttpPost("{eventId}/upload-image")]
         public async Task<IActionResult> UploadImage(Guid eventId, IFormFile imageFile)
         {
-            var eventEntity = await _getEventByIdUseCase.ExecuteAsync(eventId);
+            var eventEntity = await _addImageUseCase.ExecuteAsync(eventId, imageFile);
 
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
-            var filePath = Path.Combine("wwwroot/images", fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await imageFile.CopyToAsync(stream);
-            }
-
-            var imageEntity = new Image
-            {
-                Id = Guid.NewGuid(),
-                FilePath = filePath,
-                EventId = eventId
-            };
-            await _addImageUseCase.ExecuteAsync(imageEntity);
-
-            eventEntity.ImageId = imageEntity.Id;
             await _updateEventUseCase.ExecuteAsync(eventId, eventEntity);
 
-            return Ok(new { Message = "Image uploaded successfully.", ImagePath = filePath });
+            return Ok(new { Message = "Image uploaded successfully." });
         }
 
         [HttpGet("paged")]

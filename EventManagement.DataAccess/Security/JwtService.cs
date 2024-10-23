@@ -1,5 +1,6 @@
 ﻿using EventManagement.Application.DTO.Request;
 using EventManagement.Core.Entity;
+using EventManagement.Application.Interfaces;
 using EventManagement.Core.Interfaces.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +11,7 @@ using System.Text;
 
 namespace EventManagement.Infrastructure.Security
 {
-    public class JwtService
+    public class JwtService : IJwtService
     {
         private readonly IConfiguration _configuration;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
